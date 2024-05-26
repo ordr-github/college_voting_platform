@@ -1,4 +1,5 @@
-**Repository Name: Voting-System**
+<h1>Repository Name: College-Voting-Platform</h1>
+<p>You can view this site at <a href="https://college-voting-platform.onrender.com/">Click here</a></p>
 
 **Description:**
 This repository contains the source code for a web-based voting system implemented using Node.js, Express, MongoDB, and EJS. The system allows users to sign up, sign in, vote for candidates, view voting results, and sign out.
@@ -76,5 +77,12 @@ This repository contains the source code for a web-based voting system implement
    ```
 5. Create a pull request from your forked repository to the main repository.
 
-**License:**
-This project is licensed under the MIT License. See the LICENSE file for details.
+6. Contributors :
+      <ul>
+         <li><a href="https://github.com/VenkatreddyPadala">Venkat Reddy Padala</a></li>
+         <li><a href="https://github.com/pranayreddyambati">Pranay Reddy Ambati</a></li>
+         <li><a href="https://github.com/ordr-github">Deepak Reddy Obulareddy</a></li>
+         <li>Sravanthi Vani</li>
+      </ul>
+
+
