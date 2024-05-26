@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require('express-session');
 const dotenv = require("dotenv");
+const bcrypt = require('bcrypt');
 // Initialize Express app
 const app = express();
 dotenv.config();
@@ -110,23 +111,23 @@ app.post("/vote", async (req, res) => {
     }
 });
 
-app.get('/admin', (req, res) => {
-  res.render('admin');
-});
-
 // Route to render result.ejs
 app.get('/result', async (req, res) => {
   try {
     // Fetch all candidates and their vote counts from the database
-    const candidates = await Votes.find({});
+    let candidates = await Votes.find({});
 
-    // Render the result.ejs view and pass the candidate data
+    // Sort candidates based on vote count in descending order
+    candidates.sort((a, b) => b.votecount - a.votecount);
+
+    // Render the result.ejs view and pass the sorted candidate data
     res.render('result', { candidates: candidates });
   } catch (err) {
     console.error("Error fetching candidates:", err);
     res.status(500).send("An unexpected error occurred");
   }
 });
+
 
 let participantsData = [];
 
@@ -142,11 +143,20 @@ app.post("/login", async (req, res) => {
   try {
     const loggedInUser = await User.findOne({ email: email });
 
-    if (loggedInUser && loggedInUser.password === password) {
-      // Store the logged-in user in the session
-      req.session.email = loggedInUser.email;
-      // Redirect to the success page upon successful sign-in
-      res.redirect('/success');
+    if (loggedInUser) {
+      // Compare hashed password
+      const passwordMatch = await bcrypt.compare(password, loggedInUser.password);
+
+      if (passwordMatch) {
+        // Store the logged-in user in the session
+        req.session.email = loggedInUser.email;
+        // Redirect to the success page upon successful sign-in
+        res.redirect('/success');
+      } else {
+        // Handle unsuccessful sign-in with client-side alert
+        const errorMessage = "Invalid email or password. Please try again.";
+        res.send(`<script>alert("${errorMessage}"); window.location.href = "/";</script>`);
+      }
     } else {
       // Handle unsuccessful sign-in with client-side alert
       const errorMessage = "Invalid email or password. Please try again.";
@@ -170,12 +180,15 @@ app.post("/signup", async (req, res) => {
       const errorMessage = "Email already exists. Please choose a different email.";
       res.send(`<script>alert("${errorMessage}"); window.location.href = "/signup";</script>`);
     } else {
-      // Create a new user
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+
+      // Create a new user with hashed password
       const newUser = new User({
         firstName: firstName,
         lastName: lastName,
         email: email,
-        password: password,
+        password: hashedPassword,
         vote_validate: false
       });
 
