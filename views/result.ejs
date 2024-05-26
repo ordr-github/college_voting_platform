@@ -111,6 +111,79 @@
         tr:hover {
             background-color: #f1f1f1;
         }
+
+        @media (max-width: 1024px) {
+            nav {
+                padding: 0 2rem;
+            }
+
+            .user-info {
+                width: 90%;
+                padding: 30px;
+            }
+
+            nav .left {
+                font-size: 1.3em;
+            }
+
+            nav .right a {
+                padding: 0.5em 0.8em;
+            }
+
+            th, td {
+                padding: 12px 15px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            nav .left {
+                margin-bottom: 1rem;
+            }
+
+            nav .right ul {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav .right li {
+                margin-left: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .user-info {
+                width: 95%;
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 10px 12px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 0.5rem;
+            }
+
+            .user-info {
+                width: 100%;
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 4px 5px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
