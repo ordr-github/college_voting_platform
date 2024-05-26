@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Success Page</title>
+    <title>Results</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -190,32 +190,16 @@
 <body>
     <header>
         <nav>
-            <div class="left">College Voting</div>
+            <div class="left">Results</div>
             <div class="right">
                 <ul>
-                    <li><a href="/signout">Logout</a></li>
+                    <li><a href="/signin">Vote</a></li>
                 </ul>
             </div>
         </nav>
     </header>
     <main>
         <div class="user-info">
-            <h2>Voter Information</h2>
-            <div class="input-box">
-                <label for="firstName">First Name:</label>
-                <input type="text" id="firstName" name="firstName" value="<%= user.firstName %>" readonly>
-            </div>
-            <div class="input-box">
-                <label for="lastName">Last Name:</label>
-                <input type="text" id="lastName" name="lastName" value="<%= user.lastName %>" readonly>
-            </div>
-            <div class="input-box">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
-            </div>
-            <input type="hidden" id="voteValidate" name="voteValidate" value="<%= user.vote_validate %>">
-        </div>
-        <div class="table-container">
             <h2>Candidate List</h2>
             <table>
                 <thead>
@@ -223,7 +207,7 @@
                         <th>Sno</th>
                         <th>Name</th>
                         <th>Year/Branch</th>
-                        <th>Vote Button</th>
+                        <th>Vote Count</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -231,70 +215,13 @@
                         <tr>
                             <td><%= index + 1 %>.</td>
                             <td><%= candidate.candidate %></td>
-                            <td><%= candidate.year %></td>
-                            <td>
-                                <form action="/vote" method="post">
-                                    <input type="hidden" name="candidateName" value="<%= candidate.candidate %>">
-                                    <button type="submit" class="vote-button" data-candidate="<%= candidate.candidate %>">Vote</button>
-                                </form>
-                            </td>
+                            <td><%= candidate.year%></td>
+                            <td><%= candidate.votecount %></td>
                         </tr>
                     <% }); %>
                 </tbody>
             </table>
         </div>
     </main>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var voteValidate = document.getElementById('voteValidate').value;
-        
-        // If user has already voted, disable all buttons and highlight the voted candidate
-        if (voteValidate === 'true') {
-            disableButtons();
-            setVotedButton(localStorage.getItem('votedCandidate'));
-        }
-    
-        // Attach submit event to each form
-        var forms = document.querySelectorAll('form');
-    
-        forms.forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                // Disable all buttons after voting
-                disableButtons();
-                
-                var clickedButton = event.submitter;
-                clickedButton.textContent = "Voted";
-                
-                var candidate = clickedButton.getAttribute('data-candidate');
-                localStorage.setItem('votedCandidate', candidate);
-    
-                // Submit the form after localStorage is set
-                form.submit();
-            });
-        });
-    
-        // Function to disable all vote buttons
-        function disableButtons() {
-            var buttons = document.querySelectorAll('.vote-button');
-            buttons.forEach(function(button) {
-                button.disabled = true;
-                button.style.backgroundColor = "gray";
-            });
-        }
-    
-        // Function to highlight the voted candidate button
-        function setVotedButton(candidate) {
-            var buttons = document.querySelectorAll('.vote-button');
-            buttons.forEach(function(button) {
-                if (button.getAttribute('data-candidate') === candidate) {
-                    button.textContent = "Voted";
-                    button.style.backgroundColor = "red";
-                }
-            });
-        }
-    });
-    </script>
 </body>
 </html>

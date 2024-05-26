@@ -10,8 +10,8 @@ dotenv.config();
 
 const port = 5000;
 
-// const username = process.env.MONGODB_USERNAME
-// const password = process.env.MONGODB_PASSWORD
+const username = process.env.MONGODB_USERNAME
+const password = process.env.MONGODB_PASSWORD
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -23,7 +23,7 @@ app.use(session({
   saveUninitialized: false
 }));
 app.set('view engine', 'ejs'); // Set EJS as the view engine
-mongoose.connect(`mongodb+srv://venkatreddypadalanet:GaX81F2kp4hovbfq@cluster0.dkxowvs.mongodb.net/Voters`)
+mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.dkxowvs.mongodb.net/Voters`);
 
 // Define a mongoose schema for the user
 const userSchema = new mongoose.Schema({
@@ -43,10 +43,30 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    vote_validate: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const voteSchema = new mongoose.Schema({
+    candidate: {
+        type: String,
+        required: true
+    },
+    year:{
+      type: String,
+      required: true
+    },
+    votecount: {
+        type: Number,
+        required: true
     }
 });
 
 const User = mongoose.model('User', userSchema);
+const Votes = mongoose.model('Votes', voteSchema);
 
 // Route for signing out
 app.get("/signout", (req, res) => {
@@ -63,9 +83,53 @@ app.get("/signout", (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(__dirname + '/public/signin.html');
 });
-app.get("/admin", (req, res) => {
-  res.sendFile(__dirname + '/public/admin.html');
+
+app.get("/signin", (req, res) => {
+  res.sendFile(__dirname + '/public/signin.html');
 });
+
+app.post("/vote", async (req, res) => {
+  const candidateName = req.body.candidateName;
+
+  try {
+      const candidate = await Votes.findOne({ candidate: candidateName });
+
+      if (candidate) {
+          candidate.votecount++;
+          await candidate.save();
+
+          await User.updateOne({ email: req.session.email }, { vote_validate: true });
+
+          res.redirect('/success');
+      } else {
+          res.status(404).send("Candidate not found");
+      }
+  } catch (err) {
+      console.error("Error voting:", err);
+      res.status(500).send("An unexpected error occurred");
+    }
+});
+
+app.get('/admin', (req, res) => {
+  res.render('admin');
+});
+
+// Route to render result.ejs
+app.get('/result', async (req, res) => {
+  try {
+    // Fetch all candidates and their vote counts from the database
+    const candidates = await Votes.find({});
+
+    // Render the result.ejs view and pass the candidate data
+    res.render('result', { candidates: candidates });
+  } catch (err) {
+    console.error("Error fetching candidates:", err);
+    res.status(500).send("An unexpected error occurred");
+  }
+});
+
+let participantsData = [];
+
 // Route for the Sign Up page
 app.get("/signup", (req, res) => {
   res.sendFile(__dirname + '/public/signup.html');
@@ -112,6 +176,7 @@ app.post("/signup", async (req, res) => {
         lastName: lastName,
         email: email,
         password: password,
+        vote_validate: false
       });
 
       await newUser.save();
@@ -123,17 +188,19 @@ app.post("/signup", async (req, res) => {
     res.send(`<script>alert("${errorMessage}"); window.location.href = "/signup";</script>`);
   }
 });
+
 app.get("/success", async (req, res) => {
   try {
-    const loggedInUser = await User.findOne({ email: req.session.email });
-    if (loggedInUser) {
-      res.render('success', { user: loggedInUser });
-    } else {
-      res.status(404).send("User not found");
-    }
+      const loggedInUser = await User.findOne({ email: req.session.email });
+      const candidates = await Votes.find({});
+      if (loggedInUser) {
+          res.render('success', { user: loggedInUser, candidates: candidates });
+      } else {
+          res.status(404).send("User not found");
+      }
   } catch (err) {
-    console.error("Error fetching user information:", err);
-    res.status(500).send("An unexpected error occurred");
+      console.error("Error fetching user information:", err);
+      res.status(500).send("An unexpected error occurred");
   }
 });
 
