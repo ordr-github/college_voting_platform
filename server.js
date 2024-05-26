@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require('express-session');
 const dotenv = require("dotenv");
-
 // Initialize Express app
 const app = express();
 dotenv.config();
@@ -23,7 +22,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-
+app.set('view engine', 'ejs'); // Set EJS as the view engine
 mongoose.connect(`mongodb+srv://venkatreddypadalanet:GaX81F2kp4hovbfq@cluster0.dkxowvs.mongodb.net/Voters`)
 
 // Define a mongoose schema for the user
@@ -48,12 +47,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
-
-// Route for the Success page
-app.get("/success", async (req, res) => {
-  // Implement logic for Success page here
-  res.send("Hello World");
-});
 
 // Route for signing out
 app.get("/signout", (req, res) => {
@@ -128,6 +121,19 @@ app.post("/signup", async (req, res) => {
     // Handle errors with client-side alert
     const errorMessage = "An unexpected error occurred. Please try again later.";
     res.send(`<script>alert("${errorMessage}"); window.location.href = "/signup";</script>`);
+  }
+});
+app.get("/success", async (req, res) => {
+  try {
+    const loggedInUser = await User.findOne({ email: req.session.email });
+    if (loggedInUser) {
+      res.render('success', { user: loggedInUser });
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (err) {
+    console.error("Error fetching user information:", err);
+    res.status(500).send("An unexpected error occurred");
   }
 });
 

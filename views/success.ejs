@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: purple;
+            padding: 20px 0;
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+        }
+
+        nav .left {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        nav .right ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav .right li {
+            margin-left: 1em;
+        }
+
+        nav .right a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5em 1em;
+            background-color: grey;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav .right a:hover {
+            background-color: red;
+        }
+
+        main {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 40px 0;
+            padding: 20px;
+            gap: 40px; /* Add gap between the boxes */
+        }
+        button{
+            width: 70px;
+            height: 30px;
+            background-color: green;
+            color: white;
+            border:none !important;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            flex: 1;
+            padding: 40px; /* Increase padding */
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+        }
+
+        .table-container {
+            flex: 2;
+            padding: 40px; /* Increase padding */
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 375px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .table-container h2 {
+            margin-bottom: 40px; /* Increase margin-bottom */
+        }
+
+        .input-box {
+            margin-bottom: 1.5em; /* Increase margin-bottom */
+        }
+
+        .input-box label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .input-box input {
+            width: 90%; /* Increase width */
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1.2em; /* Increase font-size */
+            transition: border-color 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #333;
+            outline: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px 20px; /* Increase padding */
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: purple;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            position: relative;
+        }
+
+        /* td:hover::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            pointer-events: none;
+        } */
+
+        .table-container table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* .table-container table thead {
+            background-color: #4CAF50;
+        } */
+
+        .table-container table tbody tr {
+            transition: background-color 0.3s;
+        }
+
+        .table-container table tbody tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        .table-container table tbody tr td {
+            transition: background-color 0.3s;
+        }
+
+        .table-container table tbody tr:hover td {
+            background-color: #e9e9e9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="left">College Voting</div>
+            <div class="right">
+                <ul>
+                    <li><a href="/signout">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="user-info">
+            <h2>User Information</h2>
+            <div class="input-box">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" value="<%= user.firstName %>" readonly>
+            </div>
+            <div class="input-box">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" value="<%= user.lastName %>" readonly>
+            </div>
+            <div class="input-box">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+            </div>
+        </div>
+        <div class="table-container">
+            <h2>Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Name</th>
+                        <th>Year/Branch</th>
+                        <th>Vote Button</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.</td>
+                        <td>Pranay Reddy Ambati</td>
+                        <td>III / CSE</td>
+                        <td><button>Vote</button></td>
+                    </tr>
+                    <tr>
+                        <td>2.</td>
+                        <td>Deepak Reddy Obulareddy</td>
+                        <td>III / ECE</td>
+                        <td><button>Vote</button></td>
+                    </tr>
+                    <tr>
+                        <td>3.</td>
+                        <td>Sravanthi Vani Kurumoju</td>
+                        <td>III / BBA</td>
+                        <td><button>Vote</button></td>
+                    </tr>
+                    <tr>
+                        <td>4.</td>
+                        <td>Revanth Chowdary Garapati</td>
+                        <td>III / B.Com</td>
+                        <td><button>Vote</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
