@@ -33,7 +33,7 @@ This repository contains the source code for a web-based voting system implement
 **Usage:**
 1. Start the server:
    ```
-   npm start
+   npm start or node server.js
    ```
    This will start the server on port 5000 by default. You can change the port in the `index.js` file if needed.
 
